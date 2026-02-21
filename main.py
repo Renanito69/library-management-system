@@ -8,7 +8,7 @@ class Livro:
         self.ano = ano
         self.disponivel = True
         
-    def converte_para_dicionario(self):
+    def converter_livros_para_dicionario(self):
         return {
             "Titulo": self.titulo,
             "Autor": self.autor,
@@ -18,15 +18,24 @@ class Livro:
         }
         
 class Usuario:
-    def __init__(self, nome, id_usuario):
+    def __init__(self, nome, id_usuario, senha):
         self.nome = nome
         self.id_usuario = id_usuario
         self.livros_emprestados = []
+        self.senha = senha
+    
+    def converter_usuario_para_dicionario(self):
+        return {
+            "Nome": self.nome,
+            "ID_user": self.id_usuario,
+            "Senha": self.senha,
+            "Livros_emprestados": self.livros_emprestados
+        }
 
 class Biblioteca:
     def __init__(self):
         self.arquivo_livros = "Livros.json"
-        self.usuario = []
+        self.arquivo_usuario = "Usuarios.json"
         
 
     def cadastro_livro(self):
@@ -35,20 +44,25 @@ class Biblioteca:
                 cadastrados = json.load(arquivo)
         else:
             cadastrados = {"Livros": []}
-        livros = dict()
+        
         print("Cadastro de livro")
-        livros["Titulo"] = input("Titulo: ").title()
-        livros["Autor"] = input("Autor: ").title()
-        livros["Lancamento"] = int(input("Ano de Lançamento: "))
+        titulo = input("Titulo: ").title()
+        autor = input("Autor: ").title()
+        ano = int(input("Ano de Lançamento: "))
         if not os.path.exists("Livros.json"):
-            livros["Codigo"] = 1
+            codigo = 1
         else:
-            livros["Codigo"] = len(cadastrados["Livros"]) + 1
-        livros["Disponivel"] = True
-        cadastrados["Livros"].append(livros)
+            codigo = len(cadastrados["Livros"]) + 1
+        
+        livros = Livro(titulo, autor, codigo, ano)
+        
+        cadastrados["Livros"].append(livros.converter_livros_para_dicionario())
         
         with open("Livros.json", 'w') as arquivo:
             json.dump(cadastrados, arquivo, indent=4)
+        
+        print('Livro cadastrado com sucesso')
+        input("Pressione qualquer tecla para voltar")
             
     def listar_livros(self):
         if not os.path.exists(self.arquivo_livros):
@@ -72,10 +86,55 @@ class Biblioteca:
             print(f"Lancamento: {livro['Lancamento']}")
             print(f"Status: {status}")
             print("-" * 30)
-        input("Pessione qualquer tecla para voltar")
+        input("Pressione qualquer tecla para voltar")
+        
+    def cadastro_usuario(self):
+        if os.path.exists(self.arquivo_usuario):
+            with open(self.arquivo_usuario, 'r') as arquivo:
+                cadastrados = json.load(arquivo)
+        else:
+            cadastrados = {"Usuarios": []}
+            
+        print("Cadastro novo usuario")
+        nome = str(input("Usuario: ")).title()
+        senha = str(input("Senha: "))
+
+        id_user = len(cadastrados["Usuarios"]) + 1
+        
+        usuario = Usuario(nome, id_usuario=id_user, senha=senha)
+        
+        cadastrados["Usuarios"].append(usuario.converter_usuario_para_dicionario())
+        
+        with open(self.arquivo_usuario, "w") as arquivo:
+            json.dump(cadastrados, arquivo, indent=4)
+        
+        print("Novo usuario cadastrado com sucesso")
+        input("Pressione qualquer tecla para voltar")
     
 def limpar_tela():
     os.system("cls")
+    
+def cadastros():
+    biblioteca = Biblioteca()
+    
+    while True:
+        limpar_tela()
+        print("1 - Cadastrar livro")
+        print("2 - Cadastrar Usuario")
+        print("0 - Voltar")
+        
+        option = input("Escolha: ")
+        
+        if option == '1':
+            limpar_tela()
+            biblioteca.cadastro_livro()
+        elif option == '2':
+            limpar_tela()
+            biblioteca.cadastro_usuario()
+        elif option == "0":
+            print("Voltando")
+            break
+        
 
 def main():
     biblioteca = Biblioteca()
@@ -85,19 +144,19 @@ def main():
         limpar_tela()
         print("1 - Cadastros")
         print("2 - Listar livros")
-        print("3 - sair")
+        print("0 - sair")
         
         option = input("Escolha: ")
         
         if option == '1':
             limpar_tela()
-            biblioteca.cadastro_livro()
+            cadastros()
         
         elif option == '2':
             limpar_tela()
             biblioteca.listar_livros()
         
-        elif option == '3':
+        elif option == '0':
             print("Saindo")
             break
         
