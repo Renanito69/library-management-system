@@ -145,19 +145,25 @@ class Biblioteca:
         with open(self.arquivo_livros, 'r') as arquivo:
             dados_livros = json.load(arquivo)
 
+<<<<<<< HEAD
         if len(usuario_logado["Livros_emprestados"]) >= 3:
             print("Limite de 3 livros atingidos.")
             input("Pressione qualquer tecla para voltar")
             return
         
+=======
+>>>>>>> ee97162c3b0287890bec6fb9301eb37f3dd5c988
         self.listar_livros()
         codigo = int(input("\nDigite o codigo do livro: "))
         for livro in dados_livros["Livros"]:
             if livro["Codigo"] == codigo:
+<<<<<<< HEAD
                 if livro["Status"] != "Disponivel":
                     print("Livro indisponivel")
                     input("Pressione qualquer tecla para voltar")
                     return
+=======
+>>>>>>> ee97162c3b0287890bec6fb9301eb37f3dd5c988
                 livro["Status"] = f"Indisponivel com {usuario_logado['Nome']}"
                 usuario_logado["Livros_emprestados"].append(livro["Codigo"])
                 with open(self.arquivo_livros, 'w') as arquivo:
@@ -166,7 +172,10 @@ class Biblioteca:
                 with open(self.arquivo_usuario, "r") as arquivo:
                     dados_usuario = json.load(arquivo)
 
+<<<<<<< HEAD
                 
+=======
+>>>>>>> ee97162c3b0287890bec6fb9301eb37f3dd5c988
                 for usuario in dados_usuario["Usuarios"]:
                     if usuario["ID_user"] == usuario_logado["ID_user"]:
                         usuario["Livros_emprestados"] = usuario_logado["Livros_emprestados"]
@@ -266,4 +275,8 @@ def menu_usuario(usuario_logado):
 
 
 if __name__ == "__main__":
+<<<<<<< HEAD
     main()
+=======
+    main()
+>>>>>>> ee97162c3b0287890bec6fb9301eb37f3dd5c988
